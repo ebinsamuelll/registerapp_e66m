@@ -3,16 +3,24 @@ const mysql = require('mysql2');
 
 //******** TODO: Insert code to import 'express-session' *********//
 const session = require('express-session');
+
 const flash = require('connect-flash');
 
 const app = express();
 
 // Database connection
+// const db = mysql.createConnection({
+//     host: 'localhost',
+//     user: '',
+//     password: 'Republic_C207',
+//     database: 'C237_usersdb'
+// });
+
 const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'Republic_C207',
-    database: 'C237_usersdb'
+    host: 'c237-all.mysql.database.azure.com',
+    user: 'c237admin',
+    password: 'c2372025!',
+    database: 'c237_e65m_registrationdb'
 });
 
 db.connect((err) => {
@@ -31,7 +39,7 @@ app.use(session({
     resave: false,
     saveUninitialized: true,
     // Session expires after 1 week of inactivity
-    cookie: {maxAge: 1000 * 60 * 60 * 24 * 7} //milliseconds
+    cookie: {maxAge: 1000 * 60 * 60 * 24 * 7}
 }));
 
 app.use(flash());
@@ -65,16 +73,12 @@ app.get('/', (req, res) => {
 });
 
 app.get('/register', (req, res) => {
-    res.render('register', 
-    { messages: req.flash('error'), formData: req.flash('formData')[0] });
+    res.render('register', { messages: req.flash('error'), formData: req.flash('formData')[0] });
 });
 
-// The validataeRegistration is a middlewware that runds before the final route handler (/register), 
-// What this middleware does is to validate the registration form data before it is processed.
 
 //******** TODO: Create a middleware function validateRegistration ********//
-const validateRegistration = (req, res, next) => 
-{
+const validateRegistration = (req, res, next) => {
     const { username, email, password, address, contact } = req.body;
 
     if (!username || !email || !password || !address || !contact) {
